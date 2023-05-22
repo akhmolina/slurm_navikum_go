@@ -2,15 +2,16 @@ name: Build dockerfile
 
 on:
   push:
-    branches: [ $default-branch ]
-    paths:
-      - 01_week/0101_scratch/**
+    branches: [ "main" ]
   pull_request:
-    branches: [ $default-branch ]
-    paths:
-      - 01_week/0101_scratch/**
+    branches: [ "main" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+env:
+  DOCKERFILE_PATH: ./01_week/0101_scratch/Dockerfile
+  DOCKER_CONTEXT_PATH: ./01_week/0101_scratch
+  IMAGE_NAME: 0101_scratch
 
 jobs:
   build:
@@ -64,9 +65,10 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
-          context: .
+          context: $DOCKER_CONTEXT_PATH
+          file: $DOCKERFILE_PATH
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:latest
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
