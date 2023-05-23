@@ -11,11 +11,15 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
-  # app:
-  #   image: app
-  #   build: .
-  #   ports:
-  #     - '9000:9000'
-  #   depends_on:
-  #     - db
-  #   restart: unless-stopped
+  app:
+    image: app
+    build: .
+    ports:
+      - '9000:9009'
+    environment:
+      - APP_PORT=9009
+      - APP_HOST=0.0.0.0
+      - APP_DBURL=postgres://user:pass@db:5432/app
+    depends_on:
+      - db
+    restart: unless-stopped
