@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKERFILE_PATH: ./01_week/0101_scratch/Dockerfile
-  DOCKER_CONTEXT_PATH: ./01_week/0101_scratch
-  IMAGE_NAME: 0101_scratch
+  DOCKERFILE_PATH: ./01_week/0102_distroless/Dockerfile
+  DOCKER_CONTEXT_PATH: ./01_week/0102_distroless
+  IMAGE_NAME: 0102_distroless
   REGISTRY: ghcr.io
 
 jobs:
