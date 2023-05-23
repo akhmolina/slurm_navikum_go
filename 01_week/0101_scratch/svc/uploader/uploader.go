@@ -19,7 +19,7 @@ func NewSvc() *Svc {
 }
 
 func (s *Svc) Upload(ctx context.Context, header *multipart.FileHeader, input multipart.File) (err error) {
-	output, err := os.Create(filepath.Join("/upload", uuid.NewString()))
+	output, err := os.Create(filepath.Join("./upload", uuid.NewString()))
 	if err != nil {
 		return
 	}
