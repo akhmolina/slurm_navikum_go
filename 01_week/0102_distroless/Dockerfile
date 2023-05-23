@@ -8,18 +8,20 @@ COPY . .
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/app.bin cmd/main.go
 
+FROM debian:buster-slim as bash
+
+RUN apt-get update -y && \ 
+    apt-get -yy -q install --no-install-recommends --no-install-suggests --fix-missing bash-static
+
 # Now copy it into our base image.
 FROM gcr.io/distroless/base-debian11
 
+COPY --from=bash /bin/bash-static /bin/bash
 COPY --from=build /etc/group /etc/group
 COPY --from=build /etc/passwd /etc/passwd
 COPY --from=build --chown=appuser:appgroup /go/bin/app.bin /app.bin
-# USER appuser:appgroup
+USER appuser:appgroup
 
-ENV APP_PORT=9000
-ENV APP_HOST=1.0.0.0
-ENV APP_DBURL=postgres://user:pass@localhost:5432/app
-ENV GOFLAGS="-port $APP_PORT -host $APP_HOST -dbUrl $APP_DBURL"
 EXPOSE $APP_PORT
 
-CMD ["/app.bin"]
+CMD ["/bin/bash", "-c", "/app.bin --port ${APP_PORT} --host ${APP_HOST} --dbUrl ${APP_DBURL}"]
