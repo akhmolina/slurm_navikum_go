@@ -1,12 +1,13 @@
 # Start by building the application.
-FROM golang:1.19-alpine as build
+FROM golang:1.19-buster as build
 
 WORKDIR /go/src/app
-RUN addgroup -S -g 20001 appgroup && \
-    adduser -S -u 10001 -g 20001 appuser
+
+RUN groupadd --gid 20001 appgroup && \
+    useradd --gid 20001 --uid 10001 appuser
 COPY . .
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/app.bin cmd/main.go
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o /go/bin/app.bin cmd/main.go
 
 FROM debian:buster-slim as bash
 
